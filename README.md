@@ -133,7 +133,6 @@ We support multiple IDH definitions including:
 - KDOQI criteria
 - SBP drop ≥ 20 mmHg
 - SBP drop ≥ 30 mmHg
-- Combined criteria
 
 ## Reference
 ```
