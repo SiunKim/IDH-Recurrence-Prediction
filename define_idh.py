@@ -6,8 +6,6 @@ IDH events in dialysis time series data. Supported IDH definitions include:
 - SBP threshold based (SBP < 90 or 100 mmHg)
 - KDOQI criteria (SBP drop ≥ 20 mmHg or MAP drop ≥ 10 mmHg)
 - SBP drop based (≥ 20 or 30 mmHg decrease)
-- Combined criteria (SBP < 90 mmHg + SBP drop)
-- HanbiLee criteria (baseline-dependent thresholds)
 
 Key Functions:
 - get_idh_occ_* : Implementation of each IDH definition
@@ -143,69 +141,6 @@ def get_idh_occ_sbpd30(vital_sbps: List[float],
         List of boolean values indicating IDH occurrences
     """
     return [bool((sbp - baseline_sbp) <= -30) for sbp in vital_sbps]
-
-
-def get_idh_occ_sbp90_sbpd20(vital_sbps: List[float],
-                             baseline_sbp: float) -> List[bool]:
-    """
-    Detect IDH events based on combined criteria:
-    - SBP < 90 mmHg AND
-    - SBP decrease ≥ 20 mmHg
-    
-    Args:
-        vital_sbps: List of SBP measurements
-        baseline_sbp: Baseline SBP value
-        
-    Returns:
-        List of boolean values indicating IDH occurrences
-    """
-    return [bool(sbp < 90) and bool((sbp - baseline_sbp) <= -20)
-            for sbp in vital_sbps]
-
-
-def get_idh_occ_sbp90_sbpd30(vital_sbps: List[float],
-                             baseline_sbp: float) -> List[bool]:
-    """
-    Detect IDH events based on combined criteria:
-    - SBP < 90 mmHg AND
-    - SBP decrease ≥ 30 mmHg
-    
-    Args:
-        vital_sbps: List of SBP measurements
-        baseline_sbp: Baseline SBP value
-        
-    Returns:
-        List of boolean values indicating IDH occurrences
-    """
-    return [bool(sbp < 90) and bool((sbp - baseline_sbp) <= -30)
-            for sbp in vital_sbps]
-
-
-def get_idh_occ_hanbilee(vital_sbps: List[float],
-                         baseline_sbp: float) -> List[bool]:
-    """
-    Detect IDH events based on HanbiLee criteria:
-    - For baseline SBP ≥ 160: SBP < 100 mmHg
-    - For 90 ≤ baseline SBP < 160: SBP < 90 mmHg
-    - For baseline SBP < 90: SBP decrease ≥ 20 mmHg
-    
-    Args:
-        vital_sbps: List of SBP measurements
-        baseline_sbp: Baseline SBP value
-        
-    Returns:
-        List of boolean values indicating IDH occurrences
-    """
-    def get_threshold(baseline: float) -> callable:
-        if baseline >= 160:
-            return lambda x: x < 100
-        elif 90 <= baseline < 160:
-            return lambda x: x < 90
-        else:  # baseline < 90
-            return lambda x: (x - baseline) <= -20
-            
-    threshold_func = get_threshold(baseline_sbp)
-    return [bool(threshold_func(sbp)) for sbp in vital_sbps]
 
 
 def add_idh_col_to_df_tdms_ts(df_tdms_ts: pd.DataFrame) -> pd.DataFrame:
