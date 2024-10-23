@@ -1,0 +1,11 @@
+numpy==1.23.5
+pandas==1.5.3
+torch==2.0.0
+scikit-learn==1.5.1
+matplotlib==3.7.1
+tqdm==4.65.0
+pytorch-crf==0.7.2
+joblib==1.2.0
+pickle5
+seaborn==0.12.2
+openpyxl==3.1.2
